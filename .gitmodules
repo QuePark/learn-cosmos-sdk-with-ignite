@@ -1,3 +1,6 @@
 [submodule "cli"]
 	path = cli
 	url = git@github.com:ignite/cli.git
+[submodule "hello"]
+	path = hello
+	url = git@github.com:QuePark/hello.git
