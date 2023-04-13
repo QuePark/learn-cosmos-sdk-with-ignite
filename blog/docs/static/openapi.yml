@@ -45175,6 +45175,8 @@ definitions:
       id:
         type: string
         format: uint64
+  blog.blog.MsgDeletePostResponse:
+    type: object
   blog.blog.MsgUpdatePostResponse:
     type: object
   blog.blog.Params:
