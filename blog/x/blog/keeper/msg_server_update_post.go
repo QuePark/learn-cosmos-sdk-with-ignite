@@ -29,5 +29,5 @@ func (k msgServer) UpdatePost(goCtx context.Context, msg *types.MsgUpdatePost) (
 
 	k.SetPost(ctx, post)
 
-	return &types.MsgCreatePostResponse{}, nil
+	return &types.MsgUpdatePostResponse{}, nil
 }

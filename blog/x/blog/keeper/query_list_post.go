@@ -17,7 +17,7 @@ func (k Keeper) ListPost(goCtx context.Context, req *types.QueryListPostRequest)
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var posts []types.post
+	var posts []types.Post
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	postStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PostKey))
@@ -36,5 +36,8 @@ func (k Keeper) ListPost(goCtx context.Context, req *types.QueryListPostRequest)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &types.QueryListPostResponse{}, nil
+	return &types.QueryListPostResponse{
+		Post:       posts,
+		Pagination: pageRes,
+	}, nil
 }
