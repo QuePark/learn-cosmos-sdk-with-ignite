@@ -11,8 +11,6 @@ import (
 
 func (k msgServer) ApproveLoan(goCtx context.Context, msg *types.MsgApproveLoan) (*types.MsgApproveLoanResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	// TODO: Handling the message
 	loan, found := k.GetLoan(ctx, msg.Id)
 	if found == false {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "key %d doesn't exist", msg.Id)

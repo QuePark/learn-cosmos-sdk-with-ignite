@@ -10,8 +10,6 @@ import (
 
 func (k msgServer) RequestLoan(goCtx context.Context, msg *types.MsgRequestLoan) (*types.MsgRequestLoanResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	// TODO: Handling the message
 	loan := types.Loan{
 		Amount:     msg.Amount,
 		Fee:        msg.Fee,
