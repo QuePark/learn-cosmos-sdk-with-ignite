@@ -2,13 +2,15 @@ package keeper
 
 import (
 	"errors"
+	"strconv"
+
+	"planet/x/blog/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	clienttypes "github.com/cosmos/ibc-go/v6/modules/core/02-client/types"
 	channeltypes "github.com/cosmos/ibc-go/v6/modules/core/04-channel/types"
 	host "github.com/cosmos/ibc-go/v6/modules/core/24-host"
-	"planet/x/blog/types"
 )
 
 // TransmitIbcPostPacket transmits the packet over IBC with the specified source port and source channel
@@ -40,7 +42,16 @@ func (k Keeper) OnRecvIbcPostPacket(ctx sdk.Context, packet channeltypes.Packet,
 		return packetAck, err
 	}
 
-	// TODO: packet reception logic
+	id := k.AppendPost(
+		ctx,
+		types.Post{
+			Creator: packet.SourcePort + "-" + packet.SourceChannel + "-" + data.Creator,
+			Title:   data.Title,
+			Content: data.Content,
+		},
+	)
+
+	packetAck.PostID = strconv.FormatUint(id, 10)
 
 	return packetAck, nil
 }
@@ -64,7 +75,15 @@ func (k Keeper) OnAcknowledgementIbcPostPacket(ctx sdk.Context, packet channelty
 			return errors.New("cannot unmarshal acknowledgment")
 		}
 
-		// TODO: successful acknowledgement logic
+		k.AppendSentPost(
+			ctx,
+			types.SentPost{
+				Creator: data.Creator,
+				PostID:  packetAck.PostID,
+				Title:   data.Title,
+				Chain:   packet.DestinationPort + "-" + packet.DestinationChannel,
+			},
+		)
 
 		return nil
 	default:
@@ -75,8 +94,14 @@ func (k Keeper) OnAcknowledgementIbcPostPacket(ctx sdk.Context, packet channelty
 
 // OnTimeoutIbcPostPacket responds to the case where a packet has not been transmitted because of a timeout
 func (k Keeper) OnTimeoutIbcPostPacket(ctx sdk.Context, packet channeltypes.Packet, data types.IbcPostPacketData) error {
-
-	// TODO: packet timeout logic
+	k.AppendTimedoutPost(
+		ctx,
+		types.TimedoutPost{
+			Creator: data.Creator,
+			Title:   data.Title,
+			Chain:   packet.DestinationPort + "-" + packet.DestinationChannel,
+		},
+	)
 
 	return nil
 }
