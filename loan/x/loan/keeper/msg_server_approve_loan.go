@@ -19,7 +19,7 @@ func (k msgServer) ApproveLoan(goCtx context.Context, msg *types.MsgApproveLoan)
 		return nil, sdkerrors.Wrapf(types.ErrWrongLoanState, "loan %d is not in requested state", msg.Id)
 	}
 
-	lender, _ := sdk.AccAddressFromBech32(msg.Lender)
+	lender, _ := sdk.AccAddressFromBech32(msg.Creator)
 	borrower, _ := sdk.AccAddressFromBech32(loan.Borrower)
 	amount, err := sdk.ParseCoinsNormalized(loan.Amount)
 	if err != nil {

@@ -22,7 +22,7 @@ func (k msgServer) RequestLoan(goCtx context.Context, msg *types.MsgRequestLoan)
 	if err != nil {
 		panic(err)
 	}
-	collateral, err := sdk.AccAddressFromBech32(msg.Collateral)
+	collateral, err := sdk.ParseCoinsNormalized(msg.Collateral)
 	if err != nil {
 		panic(err)
 	}
