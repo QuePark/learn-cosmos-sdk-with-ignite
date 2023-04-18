@@ -73,7 +73,7 @@ func (book *OrderBook) IncrementNextOrderID() {
 }
 
 func (book *OrderBook) insertOrder(order Order, ordering Ordering) {
-	if len(book.Orders) == 0 {
+	if len(book.Orders) > 0 {
 		var i int
 
 		if ordering == Increasing {
