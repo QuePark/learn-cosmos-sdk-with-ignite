@@ -3,12 +3,13 @@ package keeper
 import (
 	"errors"
 
+	"interchange/x/dex/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	clienttypes "github.com/cosmos/ibc-go/v6/modules/core/02-client/types"
 	channeltypes "github.com/cosmos/ibc-go/v6/modules/core/04-channel/types"
 	host "github.com/cosmos/ibc-go/v6/modules/core/24-host"
-	"interchange/x/dex/types"
 )
 
 // TransmitCreatePairPacket transmits the packet over IBC with the specified source port and source channel
@@ -40,7 +41,16 @@ func (k Keeper) OnRecvCreatePairPacket(ctx sdk.Context, packet channeltypes.Pack
 		return packetAck, err
 	}
 
-	// TODO: packet reception logic
+	pairIndex := types.OrderBookIndex(packet.SourcePort, packet.SourceChannel, data.SourceDenom, data.TargetDenom)
+
+	_, found := k.GetBuyOrderBook(ctx, pairIndex)
+	if found == true {
+		return packetAck, errors.New("the pair already exists")
+	}
+
+	book := types.NewBuyOrderBook(data.SourceDenom, data.TargetDenom)
+	book.Index = pairIndex
+	k.SetBuyOrderBook(ctx, book)
 
 	return packetAck, nil
 }
@@ -64,7 +74,10 @@ func (k Keeper) OnAcknowledgementCreatePairPacket(ctx sdk.Context, packet channe
 			return errors.New("cannot unmarshal acknowledgment")
 		}
 
-		// TODO: successful acknowledgement logic
+		pairIndex := types.OrderBookIndex(packet.SourcePort, packet.SourceChannel, data.SourceDenom, data.TargetDenom)
+		book := types.NewSellOrderBook(data.SourceDenom, data.TargetDenom)
+		book.Index = pairIndex
+		k.SetSellOrderBook(ctx, book)
 
 		return nil
 	default:
