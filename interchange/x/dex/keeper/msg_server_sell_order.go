@@ -16,16 +16,16 @@ func (k msgServer) SendSellOrder(goCtx context.Context, msg *types.MsgSendSellOr
 	pairIndex := types.OrderBookIndex(msg.Port, msg.ChannelID, msg.AmountDenom, msg.PriceDenom)
 	_, found := k.GetSellOrderBook(ctx, pairIndex)
 	if found == false {
-		return &types.MsgCancelSellOrderResponse{}, errors.New("the pair doesn't exist")
+		return &types.MsgSendSellOrderResponse{}, errors.New("the pair doesn't exist")
 	}
 
 	sender, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return &types.MsgCancelSellOrderResponse{}, err
+		return &types.MsgSendSellOrderResponse{}, err
 	}
 
 	if err := k.SafeBurn(ctx, msg.Port, msg.ChannelID, sender, msg.AmountDenom, msg.Amount); err != nil {
-		return &types.MsgCancelSellOrderResponse{}, err
+		return &types.MsgSendSellOrderResponse{}, err
 	}
 
 	k.SaveVoucherDenom(ctx, msg.Port, msg.ChannelID, msg.AmountDenom)
@@ -37,10 +37,10 @@ func (k msgServer) SendSellOrder(goCtx context.Context, msg *types.MsgSendSellOr
 	packet.PriceDenom = msg.PriceDenom
 	packet.Price = msg.Price
 
-	err = k.TransmitSellOrderPacket(ctx, packet, msg.Port, msg.ChannelID, clienttypes.ZeroHeight(), msg.TimeoutTimestamp)
+	_, err = k.TransmitSellOrderPacket(ctx, packet, msg.Port, msg.ChannelID, clienttypes.ZeroHeight(), msg.TimeoutTimestamp)
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.MsgCancelSellOrderResponse{}, nil
+	return &types.MsgSendSellOrderResponse{}, nil
 }

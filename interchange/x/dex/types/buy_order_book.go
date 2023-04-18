@@ -22,7 +22,7 @@ func (b *BuyOrderBook) FillSellOrder(order Order) (
 	for {
 		var match bool
 		var liquidation Order
-		remainingSellOrder, liquidation, gain, match = b.LiquidateFromSellOrder(remainingSellOrder)
+		remainingSellOrder, liquidation, gain, match, filled = b.LiquidateFromSellOrder(remainingSellOrder)
 		if match == false {
 			break
 		}

@@ -42,7 +42,7 @@ func (k Keeper) OnRecvSellOrderPacket(ctx sdk.Context, packet channeltypes.Packe
 	}
 
 	pairIndex := types.OrderBookIndex(packet.SourcePort, packet.SourceChannel, data.AmountDenom, data.PriceDenom)
-	book, found := k.GetSellOrderBook(ctx, pairIndex)
+	book, found := k.GetBuyOrderBook(ctx, pairIndex)
 	if found == false {
 		return packetAck, errors.New("the pair doesn't exist")
 	}
@@ -110,7 +110,7 @@ func (k Keeper) OnAcknowledgementSellOrderPacket(ctx sdk.Context, packet channel
 		}
 
 		if packetAck.RemainingAmount > 0 {
-			_, err := book.appendOrder(data.Seller, packetAck.RemainingAmount, data.Price)
+			_, err := book.AppendOrder(data.Seller, packetAck.RemainingAmount, data.Price)
 			if err != nil {
 				return err
 			}
