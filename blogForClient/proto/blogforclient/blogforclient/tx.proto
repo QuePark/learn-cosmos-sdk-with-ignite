@@ -1,7 +1,0 @@
-syntax = "proto3";
-package blogforclient.blogforclient;
-
-option go_package = "blogForClient/x/blogforclient/types";
-
-// Msg defines the Msg service.
-service Msg {}

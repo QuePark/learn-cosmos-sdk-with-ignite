@@ -106,7 +106,6 @@ import (
 	blogmodule "blog/x/blog"
 	blogmodulekeeper "blog/x/blog/keeper"
 	blogmoduletypes "blog/x/blog/types"
-
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "blog/app/params"
