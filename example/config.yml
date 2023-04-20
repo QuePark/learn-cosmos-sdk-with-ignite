@@ -8,14 +8,22 @@ accounts:
   coins:
   - 10000token
   - 100000000stake
-client:
-  openapi:
-    path: docs/static/openapi.yml
+- name: frank
+  coins:
+  - 1000token
+  - 100000000stake
+  mnemonic: play butter frown city voyage pupil rabbit wheat thrive mind skate turkey
+    helmet thrive door either differ gate exhibit impose city swallow goat faint
 faucet:
   name: bob
   coins:
   - 5token
   - 100000stake
+client:
+  typescript:
+    path: ts-client
+  openapi:
+    path: docs/static/openapi.yml
 validators:
 - name: alice
   bonded: 100000000stake
